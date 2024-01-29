@@ -1,0 +1,7 @@
+- click on the input field and click outside it should give errorMessage
+- if any field is empty -> "field is Empty"
+- if any field is not in valid format -> "Field is not in Valid Format"
+
+- on submit also it should check if the validation is there or not 
+- if validated then post request , if not then throw errorMessage
+
