@@ -91,6 +91,7 @@ const RegisterUser = () => {
               Email:
             </label>
             <input
+            autoComplete="true"
               type="email"
               name="email"
               {...register("email", {
@@ -115,6 +116,7 @@ const RegisterUser = () => {
               Password:
             </label>
             <input
+            autoComplete="true"
               type="password"
               name="password "
               {...register("password", {
