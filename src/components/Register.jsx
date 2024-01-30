@@ -1,171 +1,211 @@
 /* eslint-disable no-unused-vars */
-import { useState } from "react"
+import { useForm } from "react-hook-form";
+import { COUNTRIES } from "./CountryCode";
+import { useState } from "react";
+import axios, { formToJSON } from "axios";
 
-  // first name
-  // last name
-  // email
-  // password
-  // re-enter password 
+const baseURL = "http://192.168.1.209:3000/api/v1/registration";
 
-  //  | id |
-  // | email |
-  // | password |
-  // | first_name |
-  // | last_name |
-  // | mobile_no |
-  // | account_status | 
-  // | user_type |
-  
+const RegisterUser = () => {
+  const [successMessage, setSuccessMessage] = useState("");
+  const [countryCode, setCountryCode] = useState("");
 
-const Register = () => {
-  // states for input fields
-  const [formValues, setFormValues] = useState({
-    firstName : '',
-    lastName : '',
-    email : '',
-    password : '',
-    mobileNumber : ''
-  })
-
-  const handleChange =(e) =>{
-    const {firstname, lastname,email, password,mobileNo, value} = e.target
-    setFormValues({...formValues,
-       [firstname] : value,
-       [lastname] :value ,
-       [email] : value ,
-       [password] : value,
-       [mobileNo]: value})
-  }
-
-// i cant enter any values in this. whatz
-
-//   import React, { useState } from 'react';
-
-// function YourComponent() {
-//   const [formValues, setFormValues] = useState({
-//     firstName: '',
-//     lastName: '',
-//     email: '',
-//     password: '',
-//     mobileNumber: ''
-//   })
-
-//   const handleChange = (e) => {
-//     const { name, value } = e.target;
-//     setFormValues({ ...formValues, [name]: value });
-//   }
-
-//   return (
-//     // your JSX here
-//   );
-// }
-
-  // when i type something in firstname input field , all the other fields also get the same value
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    validate,
+  } = useForm();
 
 
-  // const [firstName, setFirstName] = useState('')
-  // const [lastName, setLastName] = useState('')
-  // const [email, setEmail] = useState('')
-  // const [password, setPassword] = useState('')
-  // const [mobileNumber, setMobileNumber] = useState('')
-  // const [errorMessage, setErrorMessage] = useState('')
-  // const [errorEmailMessage, setErrorEmailMessage] = useState('')
 
-  // state for errors
-  const [submitted, setSubmitted] = useState(false)
-  const [error, setError] = useState(false)
+  const onSubmit = (data) => {
 
-  // validation for input fields
-  const emailRegex =/[^-|_`''''"\\|+()&*%^#$@=/\d/g]+[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
-  const isValidEmail = emailRegex.test(formValues.email);
+    data.countryCode = countryCode;
+    console.log(data);
+    setSuccessMessage("User Registered Succesfully");
+  };
 
-  const passwordRegex = /^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*\W)(?!.* ).{8,16}$/;
-  const isValidPassword = passwordRegex.test(formValues.password);
-
-  const firstNameRegex =  /^[a-z ,.'-]+$/i;
-  const isValidFirstName = firstNameRegex.test(formValues.firstName)
-
-  const lastNameRegex =  /^[a-z ,.'-]+$/i;
-  const isValidLastName = lastNameRegex.test(formValues.lastName)
-
-  const mobileNumberRegex =  /^[+]?[(]?[0-9]{3}[)]?[-\s.]?[0-9]{3}[-\s.]?[0-9]{4,6}$/im
-  const isValidMobileNumber = mobileNumberRegex.test(formValues.mobileNumber)
-
-  // functions for controlled input
-  // const handleFirstNameChange = (e)=>{
-  //   setFirstName(e.target.value)
-  //   setSubmitted(false)
-  // }
-
-  // const handleLastNameChange = (e)=>{
-  //   setLastName(e.target.value)
-  //   setSubmitted(false)
-  // }
-
-  // const handleEmailChange = (e)=>{
-  //   setEmail(e.target.value)
-  //   setSubmitted(false)
-  // }
-
-  // const handlePasswordChange=(e)=>{
-  //   setPassword(e.target.value)
-  //   setSubmitted(false)
-  // }
-
-  // const handleMobileNumberChange = (e)=>{
-  //   setMobileNumber(parseInt(e.target.value, 10))
-  //   setSubmitted(false)
-  // }
-
-  // submit function
-  const handleSubmit = ()=>{
-    if(!isValidEmail){
-      // setErrorMessage('Email is invalid')
-      console.log("email is required")
+  const onSubmitData = async (data) => {
+    const userData = {
+      email: data.email,
+      password : data.password,
+      countryCode : data.countryCode,
+      mobileNo : data.mobileNo
+     }
+    console.log(userData)
+    try {
+      const response = await axios.post(baseURL, userData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
+      console.log(response);
+      setSuccessMessage("User Registered Succesfully");
+    } catch (error) {
+      console.log(error.response);
     }
-    if(!isValidPassword){
-      // setErrorMessage('Password is Invalid')
-      console.log("password is required")
-    }
-    if(!isValidFirstName){
-      // setErrorMessage('First Name is Invalid')
-      console.log('First Name is Required')
-    }
+  };
 
-    if(!isValidLastName){
-      // setErrorMessage('Last Name is Invalid')
-    }
 
-    if(!isValidMobileNumber){
-      // setErrorMessage('Mobile Number is Invalid')
-    }
-  }
 
   return (
     <div>
-      <h1>Register Form</h1>
 
-      <form onSubmit={handleSubmit} className="register-form">
-        <label htmlFor="firstname">First Name:</label>
-        <input type="text" id="firstname" onChange={handleChange} value={formValues.firstName} required/>
+      {/* Container for Logo and Title  */}
+        <div className="flex ">      
+          <div className="flex items-center justify-center">
+          <img src="src/assets/1496979457.svg" alt="logo" height="80px" width="80px" />
+          </div>
+          <div>
+          <h1 className="text-4xl font-bold font-mono my-7">Ride Mate</h1>
+          </div>
+        </div>
 
-        <label htmlFor="lastname">Last Name:</label>
-        <input type="text" id="lastname" onChange={handleChange} value={formValues.lastName} required />
+      {/* Container for Register Now  Text */}
 
-        <label htmlFor="mobileNo">Mobile Number:</label>
-        <input type="tel" id="mobileNo"  onChange={handleChange} value={formValues.mobileNumber} required/>
 
-        <label htmlFor="email">Email:</label>
-        <input type="email" id="email"  onChange={handleChange} value={formValues.email} required/>
+      <p style={{ color: "orange" }}>{successMessage}</p>
 
-        <label htmlFor="password">Password:</label>
-        <input type="password"  id="password" onChange={handleChange} value={formValues.password} required/>
+    {/* Container for image and form */}
+    <div className="inline-flex"> 
+      <div className="">
+        <img src="src/assets/banner_car.png" alt="Volkswagen" className="h-80 w-100  my-16"/>
+      </div>
 
-        <button type="submit" >Sign Up</button>
-      </form>
+      <div className="flex flex-col items-center ">
+
+        <div className="my-6">
+      <h1 className=" font-mono mt-10 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900">Register</h1>
+      </div>
+        <form
+          onSubmit={handleSubmit(onSubmitData)}
+          className="flex flex-col gap-3 w-72"
+        >
+         
+
+          {/* Email Input Field */}
+          <label htmlFor="email" className="text-sm font-mono">Email:</label>
+          <input
+            type="email"
+            name="email"
+            {...register("email", {
+              required: true,
+              pattern:
+                /[^-|_`''''"\\|+()&*%^#$@=/\d/g]+[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/,
+            })}
+            className={` rounded-md border-2  border-slate-400  hover:border-slate-800 h-9 w-30 ${
+              errors.email ? "border-red-500" : ""
+            }`}
+          />
+
+          {errors.email && errors.email?.type === "required" && (
+            <p style={{ color: "red" }}>Email is Required</p>
+          )}
+          {errors.email && errors.email?.type === "pattern" && (
+            <p style={{ color: "red" }}> Email Adddress invalid</p>
+          )}
+
+          {/* Password input field */}
+          <label htmlFor="password" className="text-sm font-mono">Password:</label>
+          <input
+            type="password"
+            name="password "
+            {...register("password", {
+              required: true,
+              pattern:
+                /^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*\W)(?!.* ).{8,16}$/,
+              minLength: 8,
+            })}
+            className={` rounded-md border-2  border-slate-400  hover:border-slate-800 h-9 w-30 ${
+              errors.password ? "border-red-500" : ""
+            }`}
+          />
+
+          {errors.password && errors.password?.type === "required" && (
+            <p style={{ color: "red" }}>Password is Required</p>
+          )}
+          {errors.password && errors.password?.type === "minLength" && (
+            <p style={{ color: "red" }}>
+              Password should be atleast 8 characters
+            </p>
+          )}
+          {errors.password && errors.password?.type === "pattern" && (
+            <p style={{ color: "red" }}>
+              Password should atleast contain one uppercase character, one
+              digit, one lowercase character, one letter and one special symbol
+            </p>
+          )}
+
+        <div className="flex gap-4 items-center">
+            {/* Select Country Code */}
+            <div className="w-1/4">
+              <label htmlFor="countryCode" className="text-sm font-mono">Country:</label>
+              <select
+                // onc
+                name="countryCode"
+                {...register("countryCode", {
+                  required: true
+                })}
+
+                className={` rounded-md border-2 border-slate-400 hover:border-slate-800 h-9 w-full ${
+                  errors.countryCode ? "border-red-500" : ""
+                }`}
+              >
+
+                <option >Select Country</option>
+                {COUNTRIES.map((item) => (
+                  <option key={item.mobileCode + item.name} value={item.name}>
+                    {item.name} {item.mobileCode}
+                  </option>
+                ))}
+              </select>
+              {errors.countryCode && <p style={{ color: "red" }}>Select </p>}
+            </div>
+
+            {/* Mobile Number Input Field */}
+
+            <div className="w-3/4">
+              <label htmlFor="mobileNo" className="font-mono text-sm">Mobile Number:</label>
+              <input
+                type="text"
+                name="mobileNo"
+                {...register("mobileNo", {
+                  required: true,
+                  pattern:
+                    /^[+]?[(]?[0-9]{3}[)]?[-\s.]?[0-9]{3}[-\s.]?[0-9]{4,6}$/im,
+                  minLength: 10,
+                })}
+                className={` rounded-md border-2  border-slate-400  hover:border-slate-800 h-9 w-full ${
+                  errors.mobileNo ? "border-red-500" : ""
+                }`}
+              />
+
+              {errors.mobileNo && errors.mobileNo?.type === "required" && (
+                <p style={{ color: "red" }}>Mobile Number is Required</p>
+              )}
+              {errors.mobileNo && errors.mobileNo?.type === "pattern" && (
+                <p style={{ color: "red" }}>
+                  Mobile Number should contained 10 digits
+                </p>
+              )}
+            </div>
+          </div>
+
+          {/* Sign Up Submit Button */}
+          <div className="font-mono my-6   bg-orange-500 hover:bg-orange-700 text-white font-bold py-2 px-4 rounded-md">
+          <button
+            type="submit"
+            >
+            Sign Up
+          </button>
+          </div>
+        </form>
+      </div>
+    </div>
 
     </div>
-  )
-}
+  );
+};
 
-export default Register
+export default RegisterUser;
