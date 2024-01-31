@@ -98,7 +98,7 @@ const RegisterUser = () => {
               pattern:
                 /[^-|_`''''"\\|+()&*%^#$@=/\d/g]+[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/,
             })}
-            className={`rounded-md border-2  border-slate-400  hover:border-slate-800 h-9 w-30 ${errors.email?.type === 'required' ? 'border-red-600' : ''} `}
+            className={`rounded-md border-2  border-slate-400  hover:border-slate-800 h-9 w-30 ${(errors.email?.type === 'required' || errors.email?.type === 'pattern') ? 'border-red-600' : ''} `}
           />
 
             {console.log(errors.email?.type === 'required')}
@@ -121,7 +121,7 @@ const RegisterUser = () => {
                 /^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*\W)(?!.* ).{8,16}$/,
               minLength: 8,
             })}
-            className={` rounded-md border-2  border-slate-400  hover:border-slate-800 h-9 w-30 ${errors.password?.type === 'required' ? 'border-red-600' : ''}`}
+            className={` rounded-md border-2  border-slate-400  hover:border-slate-800 h-9 w-30 ${(errors.password?.type === 'required' || errors.password?.type === 'pattern' || errors.password?.type === 'minLength') ? 'border-red-600' : ''}`}
             maxLength={12}
           />
 
